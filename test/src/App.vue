@@ -1,7 +1,9 @@
+/* https://www.youtube.com/watch?v=Wy9q22isx3U */
+
 <template>
   <div id="app">
     <Header/>
-    <AddTodo/>
+    <AddTodo v-on:add-todo="addTodo"/>
     <Todos v-bind:todos="todos" v-on:del-todo2="deleteTodo"/>            
   </div>
 </template>
@@ -10,6 +12,7 @@
 import Header from './components/layaout/Header';
 import Todos from './components/Todos';
 import AddTodo from './components/AddTodo';
+import axios from 'axios';
 
 export default {
   name: 'App',
@@ -18,9 +21,12 @@ export default {
     Todos,
     AddTodo
   },
+  
   data(){
     return{
-      todos:[
+
+      todos:[]
+      /* todos:[
         {
           id: 1,
           title: 'Todo One',
@@ -36,13 +42,25 @@ export default {
           title: 'Todo Three',
           completed: false
         }
-      ],
-      a:3
+      ], */      
     }
+  },
+  mounted(){
+    console.log(5555);
+    this.createTodo();
   },
   methods:{
     deleteTodo(id){
       this.todos = this.todos.filter(todo => todo.id !== id);
+    },
+    addTodo(newTodo){
+      this.todos = [...this.todos, newTodo];
+    },
+    createTodo(){
+      console.log("createTodo");
+      axios.get('https://jsonplaceholder.typicode.com/todos?_limit=15')
+      .then(response => this.todos = response.data)
+      .catch(error => console.log(error));      
     }
   }
 }
